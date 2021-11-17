@@ -5,6 +5,21 @@ class ChifoumiElement extends HTMLElement {
         this._scoreOrdi = 0;
     }
 
+    // static get observedAttributes(){
+    //     return ["_scoreJoueur", "_scoreOrdi"];
+    // }
+
+    // attributeChangedCallback(name, oldValue, newValue){
+    //     console.log(`name : ${name}, oldValue : ${oldValue}, newValue : ${newValue}`);
+    //     if(name == "_scoreJoueur"){
+    //         console.log("Le score du joueur vient de changer.");
+    //     }
+    //     if(name == "_scoreOrdi"){
+    //         console.log("Le score de l'ordinateur vient de changer.");
+    //     }
+    // }
+
+    //#region getters setters
     get scoreJoueur() {
         return this._scoreJoueur;
     }
@@ -18,6 +33,7 @@ class ChifoumiElement extends HTMLElement {
     set scoreOrdi(score){
         this._scoreOrdi = score;
     }
+    //#endregion getters setters
 
     get style() {
         return `
@@ -35,30 +51,7 @@ class ChifoumiElement extends HTMLElement {
         </style>`;
     }
 
-    connectedCallback() {
-        this.attachShadow({ mode: "open" });
-
-        this.shadowRoot.innerHTML = `
-        <section id="chifoumi-container">
-            <section id="choixJoueur">
-                <input type="button" value="Pi" id="btnPierre" class="small-button">
-                <input type="button" value="Pa" id="btnPapier" class="small-button">
-                <input type="button" value="Ci" id="btnCiseaux" class="small-button">
-            </section>
-            <section id="imgChoix">
-                <img src="#" alt="choix Joueur" id="imgChoixJoueur">
-                <img src="#" alt="choixOrdi" id="imgChoixOrdi">
-            </section>           
-            <section id="scores">
-                Joueur <span id="scoreJoueur"></span> : <span id="scoreOrdi"></span> Ordi
-            </section>
-            <input type="button" value="rejouer" id="btnRejouer">
-        </section>
-        ${this.style}`;
-    }
-
-
-    /**
+     /**
      * Renvoie un nombre aléatoire 0, 1 ou 2
      * @returns 0, 1 ou 2
      */
@@ -68,7 +61,7 @@ class ChifoumiElement extends HTMLElement {
 
     static choixOrdi = () => {
         const choixChifoumi = ['pierre', 'papier', 'ciseaux'];
-        return choixChifoumi[choixRandom()];
+        return choixChifoumi[ChifoumiElement.choixRandom()];
     }
 
     static chifoumi = (choixJ1, choixJ2) => {
@@ -84,7 +77,43 @@ class ChifoumiElement extends HTMLElement {
     
     }
 
-    static _btnClick = (event) => {
+    connectedCallback() {
+        this.attachShadow({ mode: "open" });
+
+        const container = document.createElement("template");
+
+        container.innerHTML = `
+        <section id="chifoumi-container">
+            <section id="choixJoueur">
+                <input type="button" value="Pi" id="btnPierre" class="small-button">
+                <input type="button" value="Pa" id="btnPapier" class="small-button">
+                <input type="button" value="Ci" id="btnCiseaux" class="small-button">
+            </section>
+            <section id="imgChoix">
+                <img src="#" alt="choix Joueur" id="imgChoixJoueur">
+                <img src="#" alt="choix ordi" id="imgChoixOrdi">
+            </section>           
+            <section id="scores">
+                Joueur <span id="scoreJoueur"></span> : <span id="scoreOrdi"></span> Ordi
+            </section>
+            <input type="button" value="rejouer" id="btnRejouer">
+        </section>
+        ${this.style}`;
+
+        this.shadowRoot.appendChild(container.content.cloneNode(true));
+        //Ajout des events sur les boutons
+        this._addEventsButtons(this._findBoutonsChoix());
+        this.shadowRoot.querySelector("#btnRejouer").addEventListener('click', this._reset);
+        //On récupère les deux éléments qui afficheront le score des joueurs
+        this._afficheScoreJoueur = this.shadowRoot.querySelector("#scoreJoueur");
+        this._afficheScoreOrdi = this.shadowRoot.querySelector("#scoreOrdi");
+
+
+    }
+
+
+   
+    _btnClick = (event) => {
         const idOfElement = event.target.getAttribute("id");
         const imageJoueur1 = document.querySelector("#imgChoixJoueur");
         const imageOrdi = document.querySelector("#imgChoixOrdi");
@@ -105,7 +134,7 @@ class ChifoumiElement extends HTMLElement {
                 break;
         }
         
-        const choixOrdinateur = choixOrdi();
+        const choixOrdinateur = this.constructor.choixOrdi();
     
         // switch(choixOrdinateur){
         //     case "pierre":
@@ -122,34 +151,63 @@ class ChifoumiElement extends HTMLElement {
         //console.log(`choixJoueur : ${choixJoueur}, choixOrdinateur : ${choixOrdinateur}`);
     
     
-        switch (chifoumi(choixJoueur, choixOrdinateur)) {
+        switch (this.constructor.chifoumi(choixJoueur, choixOrdinateur)) {
             case 0:
                 break;
             case 1:
-                //scoreJoueur.innerText = parseInt(scoreJoueur.innerText) + 1;
+                this._scoreJoueur++;
                 break;
             case 2:
-                //scoreOrdi.innerText = parseInt(scoreOrdi.innerText) + 1;
+                this._scoreOrdi++;
                 break;
         }
-        console.log(`score du joueur : ${scoreJoueur.innerText}`);
-        console.log(`score de l'ordinateur : ${scoreOrdi.innerText}`);
+        console.log(`score du joueur : ${this._scoreJoueur}`);
+        console.log(`score de l'ordinateur : ${this._scoreOrdi}`);
+
+        this._afficheScoreJoueur.innerText = this._scoreJoueur;
+        this._afficheScoreOrdi.innerText = this._scoreOrdi;
     
         let textVictoire = "";
-        if(scoreJoueur.innerText == "3"){
+        if(this._scoreJoueur == "3"){
             textVictoire = "le joueur gagne la partie !!";
             console.log("le joueur gagne la partie !!");
-            const buttons = [...document.querySelectorAll("input")];
-            buttons.map(element => { element.disabled = true; })
+            this._desactiver();
         }
-        if(scoreOrdi.innerText == "3"){
+        if(this._scoreOrdi == "3"){
             textVictoire = "L'ordinateur gagne la partie !!";
             console.log("L'ordinateur gagne la partie !!");
-            const buttons = [...document.querySelectorAll("input")];
-            buttons.map(element => { element.disabled = true; })
+            this._desactiver();
         }
-        document.querySelector("#btnRejouer").disabled = false;
-        document.querySelector("#victoire").innerText = textVictoire;
+        //this.shadowRoot.querySelector("#btnRejouer").disabled = false;
+        // this.shadowRoot.querySelector("#victoire").innerText = textVictoire;
+    }
+
+    _findBoutonsChoix() {
+        return this.shadowRoot.querySelectorAll(".small-button");
+    }
+
+    _addEventsButtons(buttons){
+        for(let bouton of buttons){
+            bouton.addEventListener("click", this._btnClick);
+        }
+    }
+
+    _reset = (event) => {
+        this._scoreJoueur = 0;
+        this._scoreOrdi = 0;
+        this._afficheScoreJoueur.innerText = 0;
+        this._afficheScoreOrdi.innerText = 0;
+        this._activer();
+    }
+
+    _activer(){
+        const buttons = [...this._findBoutonsChoix()];
+        buttons.map(element => { element.disabled = false; });
+    }
+
+    _desactiver(){
+        const buttons = [...this._findBoutonsChoix()];
+        buttons.map(element => { element.disabled = true; });
     }
 
 }
