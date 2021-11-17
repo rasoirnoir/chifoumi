@@ -3,21 +3,16 @@ class ChifoumiElement extends HTMLElement {
         super();
         this._scoreJoueur = 0;
         this._scoreOrdi = 0;
+        //Url des images
+        /*
+https://i.postimg.cc/9XYcNcGs/ciseaux.png
+https://i.postimg.cc/gkcmC1sj/papier.png
+https://i.postimg.cc/m2dBBVpw/pierre.png
+        */
+       this._urlPierre = "https://i.postimg.cc/m2dBBVpw/pierre.png";
+       this._urlPapier = "https://i.postimg.cc/gkcmC1sj/papier.png";
+       this._urlCiseaux = "https://i.postimg.cc/9XYcNcGs/ciseaux.png";
     }
-
-    // static get observedAttributes(){
-    //     return ["_scoreJoueur", "_scoreOrdi"];
-    // }
-
-    // attributeChangedCallback(name, oldValue, newValue){
-    //     console.log(`name : ${name}, oldValue : ${oldValue}, newValue : ${newValue}`);
-    //     if(name == "_scoreJoueur"){
-    //         console.log("Le score du joueur vient de changer.");
-    //     }
-    //     if(name == "_scoreOrdi"){
-    //         console.log("Le score de l'ordinateur vient de changer.");
-    //     }
-    // }
 
     //#region getters setters
     get scoreJoueur() {
@@ -33,6 +28,27 @@ class ChifoumiElement extends HTMLElement {
     set scoreOrdi(score){
         this._scoreOrdi = score;
     }
+
+    get urlPierre(){
+        return this._urlPierre;
+    }
+    set urlPierre(url){
+        this._urlPierre = url;
+    }
+
+    get urlPapier(){
+        return this._urlPapier;
+    }
+    set urlPapier(url){
+        this._urlPapier = url;
+    }
+
+    get urlCiseaux(){
+        return this._urlCiseaux;
+    }
+    set urlCiseaux(url){
+        this._urlCiseaux = url;
+    }
     //#endregion getters setters
 
     get style() {
@@ -47,6 +63,9 @@ class ChifoumiElement extends HTMLElement {
                 display: flex;
                 flex-direction: column;
                 width: 200px;
+            }
+            #imgChoix img{
+                width: 80px;
             }
         </style>`;
     }
@@ -90,11 +109,11 @@ class ChifoumiElement extends HTMLElement {
                 <input type="button" value="Ci" id="btnCiseaux" class="small-button">
             </section>
             <section id="imgChoix">
-                <img src="#" alt="choix Joueur" id="imgChoixJoueur">
-                <img src="#" alt="choix ordi" id="imgChoixOrdi">
+                <img src="${this.urlPierre}" alt="choix Joueur" id="imgChoixJoueur">
+                <img src="${this.urlPierre}" alt="choix ordi" id="imgChoixOrdi">
             </section>           
             <section id="scores">
-                Joueur <span id="scoreJoueur"></span> : <span id="scoreOrdi"></span> Ordi
+                Joueur <span id="scoreJoueur">${this._scoreJoueur}</span> : <span id="scoreOrdi">${this._scoreOrdi}</span> Ordi
             </section>
             <input type="button" value="rejouer" id="btnRejouer">
         </section>
@@ -115,38 +134,38 @@ class ChifoumiElement extends HTMLElement {
    
     _btnClick = (event) => {
         const idOfElement = event.target.getAttribute("id");
-        const imageJoueur1 = document.querySelector("#imgChoixJoueur");
-        const imageOrdi = document.querySelector("#imgChoixOrdi");
+        const imageJoueur1 = this.shadowRoot.querySelector("#imgChoixJoueur");
+        const imageOrdi = this.shadowRoot.querySelector("#imgChoixOrdi");
     
         let choixJoueur = "";
         switch(idOfElement){
             case "btnPierre":
                 choixJoueur = "pierre";
-                //imageJoueur1.src = imagePierre;
+                imageJoueur1.src = this.urlPierre;
                 break;
             case "btnPapier":
                 choixJoueur = "papier";
-                //imageJoueur1.src = imagePapier;
+                imageJoueur1.src = this.urlPapier;
                 break;
             case "btnCiseaux":
                 choixJoueur = "ciseaux";
-                //imageJoueur1.src = imageCiseaux;
+                imageJoueur1.src = this.urlCiseaux;
                 break;
         }
         
         const choixOrdinateur = this.constructor.choixOrdi();
     
-        // switch(choixOrdinateur){
-        //     case "pierre":
-        //         imageOrdi.src = imagePierre;
-        //         break;
-        //     case "papier":
-        //         imageOrdi.src = imagePapier;
-        //         break;
-        //     case "ciseaux":
-        //         imageOrdi.src = imageCiseaux;
-        //         break;
-        // }
+        switch(choixOrdinateur){
+            case "pierre":
+                imageOrdi.src = this.urlPierre;
+                break;
+            case "papier":
+                imageOrdi.src = this.urlPapier;
+                break;
+            case "ciseaux":
+                imageOrdi.src = this.urlCiseaux;
+                break;
+        }
     
         //console.log(`choixJoueur : ${choixJoueur}, choixOrdinateur : ${choixOrdinateur}`);
     
