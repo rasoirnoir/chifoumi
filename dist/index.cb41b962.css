@@ -1,0 +1,45 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+div{
+    /* border: 1px solid black; */
+}
+
+.container{
+    display: grid;
+    margin: 0.5em;
+    grid-template-areas: 
+        "A D E"
+        "B D E"
+        "C D E"
+        "F F F";
+    grid-gap: 5px;
+    /* border: 1px solid black; */
+}
+
+#divPierre{
+    grid-area: A;
+}
+
+#divJoueur1{
+    grid-area: D;
+}
+
+#divOrdi{
+    grid-area: E;
+}
+
+#divPapier{
+    grid-area: B;
+}
+
+#divCiseaux{
+    grid-area: C;
+}
+
+#divScores{
+    grid-area: F;
+}
+/*# sourceMappingURL=index.cb41b962.css.map */

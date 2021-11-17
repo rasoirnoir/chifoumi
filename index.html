@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/script.js" type="module" defer></script>
+    <title>chifoumi</title>
+</head>
+<body>
+    <header><h1>CHIFOUMI</h1></header>
+    <section class="container">
+        <div id="divPierre">
+            <input type="button" value="Pierre" id="btnPierre">
+        </div>
+        <div id="divJoueur1">
+            <img src="#" alt="choix joueur 1" id="imgJoueur1">
+        </div>
+        <div id="divOrdi">
+            <img src="#" alt="choix joueur 2" id="imgOrdi">
+        </div>
+        <div id="divPapier">
+            <input type="button" value="Papier" id="btnPapier">
+        </div>
+        <div id="divCiseaux">
+            <input type="button" value="Ciseaux" id="btnCiseaux">
+        </div>
+        <div id="divScores">
+            <p>
+                Joueur <span id="scoreJoueur"></span> : <span id="scoreOrdi"></span> Ordinateur
+                <input type="button" value="Rejouer" onclick="window.location.reload(true)" id="btnRejouer">
+                <span id="victoire"></span>
+            </p>
+        </div>
+    </section>
+</body>
+</html>
