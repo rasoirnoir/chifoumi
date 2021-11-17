@@ -59,10 +59,24 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
                 margin: 0.2em;
                 padding: 0.2em;
             }
+            .small-button{
+                width: 50px;
+                box-shadow: 5px 5px 5px #CCC;
+                cursor: pointer;
+            }
+            .small-button:hover{
+                box-shadow: 5px 5px 5px #AAA;
+            }
+            .small-button:active{
+                box-shadow: 0px 0px;
+                transform: translate(5px, 5px);
+                background-color: #CCC;
+            }
             #chifoumi-container{
                 display: flex;
                 flex-direction: column;
                 width: 200px;
+                background-color: #DDD;
             }
             #imgChoix img{
                 width: 80px;
@@ -104,9 +118,9 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
         container.innerHTML = `
         <section id="chifoumi-container">
             <section id="choixJoueur">
-                <input type="button" value="Pi" id="btnPierre" class="small-button">
-                <input type="button" value="Pa" id="btnPapier" class="small-button">
-                <input type="button" value="Ci" id="btnCiseaux" class="small-button">
+                <input type="image" value="Pi" id="btnPierre" class="small-button" src="${this.urlPierre}">
+                <input type="image" value="Pa" id="btnPapier" class="small-button" src="${this.urlPapier}">
+                <input type="image" value="Ci" id="btnCiseaux" class="small-button" src="${this.urlCiseaux}">
             </section>
             <section id="imgChoix">
                 <img src="${this.urlPierre}" alt="choix Joueur" id="imgChoixJoueur">
@@ -221,12 +235,18 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
 
     _activer(){
         const buttons = [...this._findBoutonsChoix()];
-        buttons.map(element => { element.disabled = false; });
+        buttons.map(element => { 
+            element.disabled = false;
+            element.style.cursor = "pointer";
+        });
     }
 
     _desactiver(){
         const buttons = [...this._findBoutonsChoix()];
-        buttons.map(element => { element.disabled = true; });
+        buttons.map(element => { 
+            element.disabled = true;
+            element.style.cursor = "not-allowed";
+        });
     }
 
 }
