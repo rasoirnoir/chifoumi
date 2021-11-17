@@ -62,19 +62,24 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
             .small-button{
                 width: 50px;
                 box-shadow: 5px 5px 5px #CCC;
+                border-radius: 3px;
                 cursor: pointer;
             }
             .small-button:hover{
                 box-shadow: 5px 5px 5px #AAA;
+                background-color: #CCC;
             }
             .small-button:active{
                 box-shadow: 0px 0px;
                 transform: translate(5px, 5px);
                 background-color: #CCC;
+                border-right: 0px;
+                border-bottom: 0px;
             }
             #chifoumi-container{
                 display: flex;
                 flex-direction: column;
+                align-items: center;
                 width: 200px;
                 background-color: #DDD;
             }
