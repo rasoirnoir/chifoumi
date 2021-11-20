@@ -9,9 +9,9 @@ https://i.postimg.cc/9XYcNcGs/ciseaux.png
 https://i.postimg.cc/gkcmC1sj/papier.png
 https://i.postimg.cc/m2dBBVpw/pierre.png
         */
-       this._urlPierre = "https://i.postimg.cc/m2dBBVpw/pierre.png";
-       this._urlPapier = "https://i.postimg.cc/gkcmC1sj/papier.png";
-       this._urlCiseaux = "https://i.postimg.cc/9XYcNcGs/ciseaux.png";
+        this._urlPierre = "https://i.postimg.cc/m2dBBVpw/pierre.png";
+        this._urlPapier = "https://i.postimg.cc/gkcmC1sj/papier.png";
+        this._urlCiseaux = "https://i.postimg.cc/9XYcNcGs/ciseaux.png";
     }
 
     //#region getters setters
@@ -22,31 +22,31 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
         this._scoreJoueur = score;
     }
 
-    get scoreOrdi(){
+    get scoreOrdi() {
         return this._scoreOrdi;
     }
-    set scoreOrdi(score){
+    set scoreOrdi(score) {
         this._scoreOrdi = score;
     }
 
-    get urlPierre(){
+    get urlPierre() {
         return this._urlPierre;
     }
-    set urlPierre(url){
+    set urlPierre(url) {
         this._urlPierre = url;
     }
 
-    get urlPapier(){
+    get urlPapier() {
         return this._urlPapier;
     }
-    set urlPapier(url){
+    set urlPapier(url) {
         this._urlPapier = url;
     }
 
-    get urlCiseaux(){
+    get urlCiseaux() {
         return this._urlCiseaux;
     }
-    set urlCiseaux(url){
+    set urlCiseaux(url) {
         this._urlCiseaux = url;
     }
     //#endregion getters setters
@@ -77,22 +77,46 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
                 border-bottom: 0px;
             }
             #chifoumi-container{
+                position: relative;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 width: 200px;
                 background-color: #DDD;
+                border: 1px solid #555;
             }
             #imgChoix img{
                 width: 80px;
             }
+            #chifoumi-overlay {
+                position: absolute; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                /*right: 0;
+                bottom: 0;*/
+                background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+                z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+                cursor: pointer; /* Add a pointer on hover */
+            }
+            #text-overlay{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                font-size: 16px;
+                color: white;
+                transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+            }
         </style>`;
     }
 
-     /**
-     * Renvoie un nombre aléatoire 0, 1 ou 2
-     * @returns 0, 1 ou 2
-     */
+    /**
+    * Renvoie un nombre aléatoire 0, 1 ou 2
+    * @returns 0, 1 ou 2
+    */
     static choixRandom = () => {
         return Math.floor(Math.random() * 3);
     }
@@ -104,15 +128,15 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
 
     static chifoumi = (choixJ1, choixJ2) => {
         const win = {
-            "pierre" : "ciseaux",
-            "papier" : "pierre",
-            "ciseaux" : "papier"
+            "pierre": "ciseaux",
+            "papier": "pierre",
+            "ciseaux": "papier"
         }
-    
-        if(choixJ2 == win[choixJ1]) return 1;
-        if(choixJ1 == win[choixJ2]) return 2;
+
+        if (choixJ2 == win[choixJ1]) return 1;
+        if (choixJ1 == win[choixJ2]) return 2;
         return 0;
-    
+
     }
 
     connectedCallback() {
@@ -135,6 +159,9 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
                 Joueur <span id="scoreJoueur">${this._scoreJoueur}</span> : <span id="scoreOrdi">${this._scoreOrdi}</span> Ordi
             </section>
             <input type="button" value="rejouer" id="btnRejouer">
+            <div id="chifoumi-overlay">
+                <p id="text-overlay"></p>
+            </div>
         </section>
         ${this.style}`;
 
@@ -146,18 +173,18 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
         this._afficheScoreJoueur = this.shadowRoot.querySelector("#scoreJoueur");
         this._afficheScoreOrdi = this.shadowRoot.querySelector("#scoreOrdi");
 
-
+        this.shadowRoot.querySelector("#chifoumi-overlay").addEventListener('click', this._reset);
     }
 
 
-   
+
     _btnClick = (event) => {
         const idOfElement = event.target.getAttribute("id");
         const imageJoueur1 = this.shadowRoot.querySelector("#imgChoixJoueur");
         const imageOrdi = this.shadowRoot.querySelector("#imgChoixOrdi");
-    
+
         let choixJoueur = "";
-        switch(idOfElement){
+        switch (idOfElement) {
             case "btnPierre":
                 choixJoueur = "pierre";
                 imageJoueur1.src = this.urlPierre;
@@ -171,10 +198,10 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
                 imageJoueur1.src = this.urlCiseaux;
                 break;
         }
-        
+
         const choixOrdinateur = this.constructor.choixOrdi();
-    
-        switch(choixOrdinateur){
+
+        switch (choixOrdinateur) {
             case "pierre":
                 imageOrdi.src = this.urlPierre;
                 break;
@@ -185,10 +212,10 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
                 imageOrdi.src = this.urlCiseaux;
                 break;
         }
-    
+
         //console.log(`choixJoueur : ${choixJoueur}, choixOrdinateur : ${choixOrdinateur}`);
-    
-    
+
+
         switch (this.constructor.chifoumi(choixJoueur, choixOrdinateur)) {
             case 0:
                 break;
@@ -204,17 +231,17 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
 
         this._afficheScoreJoueur.innerText = this._scoreJoueur;
         this._afficheScoreOrdi.innerText = this._scoreOrdi;
-    
+
         let textVictoire = "";
-        if(this._scoreJoueur == "3"){
+        if (this._scoreJoueur == "3") {
             textVictoire = "le joueur gagne la partie !!";
             console.log("le joueur gagne la partie !!");
-            this._desactiver();
+            this._desactiver("Victoire !!");
         }
-        if(this._scoreOrdi == "3"){
+        if (this._scoreOrdi == "3") {
             textVictoire = "L'ordinateur gagne la partie !!";
             console.log("L'ordinateur gagne la partie !!");
-            this._desactiver();
+            this._desactiver("Défaite !!");
         }
         //this.shadowRoot.querySelector("#btnRejouer").disabled = false;
         // this.shadowRoot.querySelector("#victoire").innerText = textVictoire;
@@ -224,8 +251,8 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
         return this.shadowRoot.querySelectorAll(".small-button");
     }
 
-    _addEventsButtons(buttons){
-        for(let bouton of buttons){
+    _addEventsButtons(buttons) {
+        for (let bouton of buttons) {
             bouton.addEventListener("click", this._btnClick);
         }
     }
@@ -238,20 +265,31 @@ https://i.postimg.cc/m2dBBVpw/pierre.png
         this._activer();
     }
 
-    _activer(){
+    _activer() {
         const buttons = [...this._findBoutonsChoix()];
-        buttons.map(element => { 
+        buttons.map(element => {
             element.disabled = false;
             element.style.cursor = "pointer";
         });
+        this.off();
     }
 
-    _desactiver(){
+    _desactiver(message) {
         const buttons = [...this._findBoutonsChoix()];
-        buttons.map(element => { 
+        buttons.map(element => {
             element.disabled = true;
             element.style.cursor = "not-allowed";
         });
+        this.shadowRoot.getElementById("text-overlay").innerText = message;
+        this.on();
+    }
+
+    on() {
+        this.shadowRoot.getElementById("chifoumi-overlay").style.display = "block";
+    }
+
+    off() {
+        this.shadowRoot.getElementById("chifoumi-overlay").style.display = "none";
     }
 
 }
